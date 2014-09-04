@@ -1,0 +1,14 @@
+{
+  "name": "crypto-helper",
+  "main": "./lib/crypto-helper",
+  "version": "0.0.0",
+  "description": "A wrapper tool around the crypto package, for the Atom editor.",
+  "activationEvents": ["crypto-helper:toggle"],
+  "repository": "https://github.com/vellerefond/crypto-helper",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}
