@@ -13,7 +13,7 @@ module.exports =
     serialize: ->
         cryptoHelperViewState: @cryptoHelperView.serialize()
 
-    compute: (methodKindType, input, key) ->
+    compute: (methodKindType, input, key, outputFormat) ->
         console.log methodKindType, input, key
         return undefined unless methodKindType
         methodKind = null
@@ -23,11 +23,11 @@ module.exports =
         switch methodKind
             when 'hash'
                 unless key
-                    return @computeHash methodType, input
-                return @computeHashHMAC methodType, input, key
+                    return @computeHash methodType, input, outputFormat
+                return @computeHashHMAC methodType, input, key, outputFormat
 
-    computeHash: (hashType, input) ->
-        'hash: ' + input
+    computeHash: (hashType, input, outputFormat) ->
+        return crypto.createHash(hashType).update(input, 'utf8').digest(outputFormat)
 
-    computeHashHMAC: (hashType, input, key) ->
+    computeHashHMAC: (hashType, input, key, outputFormat) ->
         'hmac: ' + input + ':' + key
