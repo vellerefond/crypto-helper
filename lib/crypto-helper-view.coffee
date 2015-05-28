@@ -1,77 +1,44 @@
-{View, EditorView} = require 'atom'
-crypto = require 'crypto'
+{ $, View } = require 'atom-space-pen-views'
 
 module.exports =
 class CryptoHelperView extends View
-    cryptoHelper: null
+	@content: ->
+		@div class: 'crypto-helper overlay from-top'
 
-    input: null
+	initialize: (cryptoHelper) ->
+		@cryptoHelper = @cryptoHelper or cryptoHelper
 
-    key: null
+	getEntryView: () ->
 
-    method: null
+	attach: (viewModeParameters, items) ->
+		###
+		@viewModeParameters = viewModeParameters
+		@self = atom.workspace.addModalPanel item: @
+		$content = $(atom.views.getView atom.workspace).find '.project-ring-file-select'
+		unless @isInitialized
+			$controls = $content.find('.controls')
+			$controls.find('input:button.confirm').on 'click', => @confirmed()
+			$controls.find('input:button.cancel').on 'click', => @destroy()
+			$controls.find('input:button.select-all').on 'click', => @setAllEntriesSelected true
+			$controls.find('input:button.deselect-all').on 'click', => @setAllEntriesSelected false
+			@isInitialized = true
+		$content.find('.controls .confirm').val @viewModeParameters.confirmValue
+		$entries = $content.find('.entries').empty()
+		unless items.length
+			$entries.append ($ '<div>There are no files available for opening.</div>').addClass 'empty'
+			return
+		for { title, description, path } in items
+			$entries.append @getEntryView title: title, description: description, path: path
+		###
 
-    outputFormat: null
+	destroy: ->
+		@self.destroy()
 
-    result: null
-
-    @content: ->
-        @div class: 'crypto-helper overlay from-top', =>
-            @select class: 'method', =>
-                ###
-                @option '--- Ciphers ---', { value: '' }
-                crypto.getCiphers().forEach (cipher) =>
-                    @option cipher, { value: 'cipher-' + cipher }
-                ###
-                @option '--- Hashes ---', value: ''
-                crypto.getHashes().forEach (hash) =>
-                    @option hash, value: 'hash-' + hash
-            @select class: 'output-format', =>
-                @option '--- Output Format ---', value: ''
-                @option 'HEX', value: 'hex'
-                @option 'Base64', value: 'base64'
-            @subview 'input', new EditorView { mini: true, placeholderText: 'Input to compute...' }
-            @subview 'key', new EditorView { mini: true, placeholderText: 'Key for computation...' }
-            @div class: 'crypto-helper-result'
-            @input { type: 'button', class: 'cancel', value: 'Close' }
-            @input { type: 'button', class: 'confirm', value: 'Compute' }
-            @input { type: 'button', class: 'clear', value: 'Clear' }
-
-    initialize: (cryptoHelper) ->
-        @cryptoHelper = cryptoHelper
-        atom.workspaceView.command "crypto-helper:toggle", => @toggle()
-        # @input.on 'core:confirm', => @confirmed()
-        @input.on 'core:cancel', => @destroy()
-        @key.on 'core:confirm', => @confirmed()
-        @key.on 'core:cancel', => @destroy()
-        setTimeout (
-                =>
-                    @method = atom.workspaceView.find '.crypto-helper > select.method' unless @list
-                    @outputFormat = atom.workspaceView.find '.crypto-helper > select.output-format' unless @list
-                    @result = atom.workspaceView.find '.crypto-helper-result' unless @result
-                    (atom.workspaceView.find '.crypto-helper .confirm').on 'click', => @confirmed()
-                    (atom.workspaceView.find '.crypto-helper .cancel').on 'click', => @destroy()
-                    (atom.workspaceView.find '.crypto-helper .clear').on 'click', => @clear()
-            ),
-            0
-
-    serialize: ->
-
-    destroy: ->
-        @detach()
-
-    toggle: ->
-        if @hasParent()
-            @result.text ''
-            @detach()
-        else
-            atom.workspaceView.append @
-            @input.focus()
-
-    confirmed: ->
-        @result.text @cryptoHelper.compute @method.val(), @input.getText(), @key.getText(), @outputFormat.val()
-
-    clear: ->
-        @input.setText ''
-        @key.setText ''
-        @result.text ''
+	confirmed: ->
+		###
+		bufferPaths = []
+		$(atom.views.getView atom.workspace).find('.project-ring-file-select .entries input:checkbox.checked').each (index, element) ->
+				bufferPaths.push $(element).attr 'data-path'
+		@destroy()
+		@projectRing.handleProjectRingFileSelectViewSelection @viewModeParameters, bufferPaths
+		###

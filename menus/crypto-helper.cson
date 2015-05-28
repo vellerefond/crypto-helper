@@ -1,16 +1,16 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
   '.overlayer':
-      'Enable crypto-helper': 'crypto-helper:toggle'
+	  'Enable crypto-helper': 'crypto-helper:toggle'
 
 'menu': [
   {
-    'label': 'Packages'
-    'submenu': [
-      'label': 'crypto-helper'
-      'submenu': [
-        { 'label': 'Toggle', 'command': 'crypto-helper:toggle' }
-      ]
-    ]
+	'label': 'Packages'
+	'submenu': [
+	  'label': 'crypto-helper'
+	  'submenu': [
+		{ 'label': 'Toggle', 'command': 'crypto-helper:toggle' }
+	  ]
+	]
   }
 ]
