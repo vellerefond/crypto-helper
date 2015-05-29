@@ -1,16 +1,20 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
-  '.overlayer':
-	  'Enable crypto-helper': 'crypto-helper:toggle'
+	'.overlayer':
+		'Compute SHA512': 'crypto-helper:hash-sha512'
+		'Encode to Base64': 'crypto-helper:convert-to-base64'
+		'Decode from Base64': 'crypto-helper:convert-from-base64'
 
 'menu': [
-  {
-	'label': 'Packages'
-	'submenu': [
-	  'label': 'crypto-helper'
-	  'submenu': [
-		{ 'label': 'Toggle', 'command': 'crypto-helper:toggle' }
-	  ]
-	]
-  }
+	{
+		'label': 'Packages'
+		'submenu': [
+			'label': 'crypto-helper'
+			'submenu': [
+				{ 'label': 'Compute SHA512', 'command': 'crypto-helper:hash-sha512' }
+				{ 'label': 'Encode to Base64', 'command': 'crypto-helper:convert-to-base64' }
+				{ 'label': 'Decode from Base64', 'command': 'crypto-helper:convert-from-base64' }
+			]
+		]
+	}
 ]

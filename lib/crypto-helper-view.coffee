@@ -30,6 +30,7 @@ class CryptoHelperView extends View
 		for { title, description, path } in items
 			$entries.append @getEntryView title: title, description: description, path: path
 		###
+		return
 
 	destroy: ->
 		@self.destroy()
@@ -42,3 +43,4 @@ class CryptoHelperView extends View
 		@destroy()
 		@projectRing.handleProjectRingFileSelectViewSelection @viewModeParameters, bufferPaths
 		###
+		return
